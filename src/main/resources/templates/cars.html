@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Список автомобилей</title>
+</head>
+
+<body>
+<div class="container">
+    <h1>Список автомобилей</h1>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#car-list-tab">Список автомобилей</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#add-car-tab">Добавить автомобиль</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#update-car-tab">Изменить автомобиль</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#delete-car-tab">Удалить автомобиль</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="car-list-tab" class="tab-pane fade show active">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Марка</th>
+                    <th>Модель</th>
+                    <th>Год выпуска</th>
+                    <th>Цвет</th>
+                    <th>Тип кузова</th>
+                </tr>
+                </thead>
+                <tbody id="car-list"></tbody>
+            </table>
+        </div>
+
+        <div id="add-car-tab" class="tab-pane fade">
+            <h3>Добавить автомобиль</h3>
+            <form id="add-car-form">
+                <div class="form-group">
+                    <label for="brand">Марка:</label>
+                    <input type="text" class="form-control" id="brand" required>
+                </div>
+                <div class="form-group">
+                    <label for="model">Модель:</label>
+                    <input type="text" class="form-control" id="model" required>
+                </div>
+                <div class="form-group">
+                    <label for="year">Год выпуска:</label>
+                    <input type="number" class="form-control" id="year" required>
+                </div>
+                <div class="form-group">
+                    <label for="color">Цвет:</label>
+                    <input type="text" class="form-control" id="color" required>
+                </div>
+                <div class="form-group">
+                    <label for="body-type">Тип кузова:</label>
+                    <input type="text" class="form-control" id="body-type" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </form>
+        </div>
+
+        <div id="update-car-tab" class="tab-pane fade">
+            <h3>Изменить автомобиль</h3>
+            <form id="update-car-form">
+                <div class="form-group">
+                    <label for="update-car-id">Выберите ID автомобиля:</label>
+                    <select class="form-control" id="update-car-id">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="update-brand">Марка:</label>
+                    <input type="text" class="form-control" id="update-brand" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-model">Модель:</label>
+                    <input type="text" class="form-control" id="update-model" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-year">Год выпуска:</label>
+                    <input type="number" class="form-control" id="update-year" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-color">Цвет:</label>
+                    <input type="text" class="form-control" id="update-color" required>
+                </div>
+                <div class="form-group">
+                    <label for="update-body-type">Тип кузова:</label>
+                    <input type="text" class="form-control" id="update-body-type" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </form>
+        </div>
+
+        <div id="delete-car-tab" class="tab-pane fade">
+            <h3>Удалить автомобиль</h3>
+            <form id="delete-car-form">
+                <div class="form-group">
+                    <label for="delete-car-id">Выберите ID автомобиля:</label>
+                    <select class="form-control" id="delete-car-id">
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript" charset="UTF-8">
+    var cars = JSON.parse(/*[[${json}]]*/ "");
+    var carList = document.getElementById('car-list');
+    var updateCarIdSelect = document.getElementById('update-car-id');
+    var deleteCarIdSelect = document.getElementById('delete-car-id');
+    var addCarForm = document.getElementById('add-car-form');
+    var updateCarForm = document.getElementById('update-car-form');
+    var deleteCarForm = document.getElementById('delete-car-form');
+
+    cars.forEach(function (car) {
+        var row = document.createElement('tr');
+        Object.keys(car).forEach(function (key) {
+            var cell = document.createElement('td');
+            cell.textContent = car[key];
+            row.appendChild(cell);
+        });
+        carList.appendChild(row);
+
+        var option1 = document.createElement('option');
+        option1.value = car.id;
+        option1.textContent = car.id;
+        updateCarIdSelect.appendChild(option1);
+
+        var option2 = document.createElement('option');
+        option2.value = car.id;
+        option2.textContent = car.id;
+        deleteCarIdSelect.appendChild(option2);
+    });
+
+    addCarForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var brand = document.getElementById('brand').value;
+        var model = document.getElementById('model').value;
+        var year = document.getElementById('year').value;
+        var color = document.getElementById('color').value;
+        var bodyType = document.getElementById('body-type').value;
+
+        var newCar = {
+            "brand": brand,
+            "model": model,
+            "year": year,
+            "color": color,
+            "bodyType": bodyType
+        };
+        alert('Автомобиль успешно добавлен в список.');
+        var request = new XMLHttpRequest();
+        request.open("POST", "/cars/add", true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(newCar));
+        // Очистка полей формы
+        addCarForm.reset();
+    });
+
+    updateCarForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var selectedCarId = updateCarIdSelect.value;
+        var brand = document.getElementById('update-brand').value;
+        var model = document.getElementById('update-model').value;
+        var year = document.getElementById('update-year').value;
+        var color = document.getElementById('update-color').value;
+        var bodyType = document.getElementById('update-body-type').value;
+
+        console.log('Выбранный ID автомобиля:', selectedCarId);
+        var editCar = {
+            "brand": brand,
+            "model": model,
+            "year": year,
+            "color": color,
+            "bodyType": bodyType
+        };
+        alert('Автомобиль успешно изменен.');
+        var request = new XMLHttpRequest();
+        request.open("PUT", "/cars/edit/" + selectedCarId, true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(editCar));
+        // Очистка полей формы
+        updateCarForm.reset();
+    });
+
+    deleteCarForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var selectedCarId = deleteCarIdSelect.value;
+
+        alert('Автомобиль успешно удален.');
+        var request = new XMLHttpRequest();
+        request.open("DELETE", "/cars/" + selectedCarId, true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send();
+
+        deleteCarForm.reset();
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
